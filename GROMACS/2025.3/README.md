@@ -370,8 +370,8 @@ Cannot find ARM (AArch64) SVE SIMD instructions
 事前生成された外部 SIMD カーネルを指定することで回避できます。
 
 ```bash
--DGMX_EXTERNAL_SIMD_2XMM=<libsimd_2xmm.a>
--DGMX_EXTERNAL_SIMD_4XM=<libsimd_4xm.a>
+-DGMX_2XMM_USER=<libsimd_2xmm.a>
+-DGMX_4XM_USER=<libsimd_4xm.a>
 ```
 
 ---
