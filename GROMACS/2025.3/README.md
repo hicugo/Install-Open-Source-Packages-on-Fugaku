@@ -280,9 +280,10 @@ $ cd regressiontests-2025.3
 
 パッチの適用
 
-- 同梱のpatch fileを利用可能です。
+- 当リポジトリ配下に格納されたpatch fileをコピーして利用可能です。
 
 ```bash
+cp <repository>/GROMACS/2025.3/gmxtest.patch .
 patch -p0 < gmxtest.patch
 ```
 
