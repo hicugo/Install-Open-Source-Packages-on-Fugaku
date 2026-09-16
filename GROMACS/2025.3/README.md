@@ -216,10 +216,11 @@ gmx_mpi
 ## CMake
 
 ```bash
+cd ..
 mkdir build-nompi
 cd build-nompi
 
-cmake .. \
+cmake ..
  -DCMAKE_C_COMPILER=fcc \
  -DCMAKE_CXX_COMPILER=FCC \
  -DCMAKE_INSTALL_PREFIX=$PREFIX \
