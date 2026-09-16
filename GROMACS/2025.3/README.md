@@ -153,11 +153,7 @@ $ cd gromacs-2025.3
 
 パッチの適用
 
-- 必要に応じて、RISTがチューニングした以下のパッチファイルを適用できます。
-
-```bash
-for patch in sve external-kernels pme_simd pme_spread tune_pme pmswp std_filesystem_equivalent essentialdynamics;
-do patch -p1 < /vol0004/apps/oss/spack-v1.0.1/var/spack/fugaku-packages/repos/spack_repo/fugaku/rist/packages/gromacs/$patch-2025.patch;
+- 以下の CMake オプションを使用するため、RIST がチューニングしたパッチファイルを適用してください。
 done
 ```
 
