@@ -284,7 +284,9 @@ $ cd regressiontests-2025.3
 当リポジトリ配下に格納されたpatch fileをコピーして利用可能です。
 
 ```bash
-cp <repository>/GROMACS/2025.3/gmxtest.patch .
+export REPO_DIR=/path/to/Install-Open-Source-Packages-on-Fugaku       # REPO_DIR: 本リポジトリをクローンしたディレクトリ
+
+cp $REPO_DIR/GROMACS/2025.3/gmxtest.patch .
 patch -p1 < gmxtest.patch
 ```
 
