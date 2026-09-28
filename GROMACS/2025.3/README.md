@@ -15,7 +15,7 @@ md計算(gmx_mpi mdrun)はMPI並列で行うため、ビルドスクリプトを
 
 pjsub --interact --sparam wait-time=600 --rsc-list "elapse=1:0:0,node=1" --mpi "proc=2"
 
-最後に公式サイトより提供されているRegression Testsを実行し、 翻訳したモジュールの妥当性を検証します。2MPIを用いた例を示します。
+最後に公式サイトより提供されているRegression Testsを実行し、 翻訳したモジュールの妥当性を検証します。2MPIプロセスを用いた例を示します。
 
 ---
 
@@ -279,52 +279,16 @@ $ tar xzf regressiontests-2025.3.tar.gz
 $ cd regressiontests-2025.3
 ```
 
-パッチの適用
+パッチの適用：
 
-- 当リポジトリ配下に格納されたpatch fileをコピーして利用可能です。
+当リポジトリ配下に格納されたpatch fileをコピーして利用可能です。
 
 ```bash
 cp <repository>/GROMACS/2025.3/gmxtest.patch .
-patch -p0 < gmxtest.patch
+patch -p1 < gmxtest.patch
 ```
 
-- 具体的な修正内容は以下の通りです。
-
-```text
-$ diff -ru gmxtest.pl.org gmxtest.pl
---- gmxtest.pl.org      2024-04-17 17:29:00.000000000 +0900
-+++ gmxtest.pl  2024-04-19 18:28:25.000000000 +0900
-@@ -68,6 +68,7 @@
- my $mpirun    = 'mpirun';
- my $parse_cmd = '';
- my $gmx_cmd   = "gmx";
-+my $gmx_cmd2  = "gmx_mpi";
- my %progs = ( 'grompp'   => '',
-               'mdrun'    => '',
-               'pdb2gmx'  => '',
-@@ -169,14 +170,20 @@
-            $mdprefix = sub { "$mpirun -n $_[0]" };
-        } else {
-            # edit the next line if you need to customize the call to mpirun
--           $mdprefix = sub { "$mpirun -np $_[0] -wdir " . getcwd() };
-+           $mdprefix = sub { "$mpirun -np $_[0]" };
-        }
-     }
-     if ($autosuffix && ( $double > 0)) {
-         $gmx_cmd .= "_d";
-     }
-     foreach my $prog ( keys %progs ) {
--        $progs{$prog} = "$gmx_cmd$suffix $prog";
-+       #        $progs{$prog} = "$gmx_cmd$suffix $prog";
-+       if ( $prog eq "mdrun" )
-+       {
-+           $progs{$prog} = "$gmx_cmd2$suffix $prog";
-+       } else {
-+           $progs{$prog} = "$gmx_cmd$suffix $prog";
-+        }          
-     }
-     $ref = 'reference_' . ($double > 0 ? 'd' : 's');
-```
+パッチの内容は同梱のgmxtest.patchを参照してください。
 
 GROMACS の環境設定を読み込みます。
 

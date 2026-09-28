@@ -1,5 +1,5 @@
---- gmxtest.pl.org	2024-11-04 21:00:20.000000000 +0900
-+++ gmxtest.pl	2026-09-09 16:16:39.000000000 +0900
+--- a/gmxtest.pl	2024-11-04 21:00:20.000000000 +0900
++++ b/gmxtest.pl	2026-09-09 16:16:39.000000000 +0900
 @@ -68,6 +68,7 @@
  my $mpirun    = 'mpirun';
  my $parse_cmd = '';
@@ -8,7 +8,7 @@
  my %progs = ( 'grompp'   => '',
                'mdrun'    => '',
                'pdb2gmx'  => '',
-@@ -169,14 +170,21 @@
+@@ -169,14 +170,22 @@
  	    $mdprefix = sub { "$mpirun -n $_[0]" };
  	} else {
  	    # edit the next line if you need to customize the call to mpirun
@@ -19,6 +19,7 @@
      }
      if ($autosuffix && ( $double > 0)) {
          $gmx_cmd .= "_d";
++        $gmx_cmd2 .= "_d";
      }
      foreach my $prog ( keys %progs ) {
 -        $progs{$prog} = "$gmx_cmd$suffix $prog";
