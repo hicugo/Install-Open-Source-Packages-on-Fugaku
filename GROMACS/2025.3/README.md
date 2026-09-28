@@ -13,9 +13,9 @@ md計算(gmx_mpi mdrun)はMPI並列で行うため、ビルドスクリプトを
 
 なお、翻訳は計算ノードで行いました。
 
-pjsub --interact --sparam wait-time=600 --rsc-list "elapse=1:0:0,node=1"
+pjsub --interact --sparam wait-time=600 --rsc-list "elapse=1:0:0,node=1" --mpi "proc=2"
 
-最後に公式サイトより提供されているRegression Testsを実行し、 翻訳したモジュールの妥当性を検証します。2ノードを用いた例を示します。
+最後に公式サイトより提供されているRegression Testsを実行し、 翻訳したモジュールの妥当性を検証します。2MPIを用いた例を示します。
 
 ---
 
