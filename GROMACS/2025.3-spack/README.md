@@ -677,14 +677,8 @@ spack spec ...
 
 が含まれていないか確認する。
 
-含まれている場合は
-
-```yaml
-fujitsu-mpi@4.12.2
-fujitsu-ssl2@4.12.2
-```
-
-の external 定義を確認する。
+含まれている場合は、`fujitsu-ssl2@4.12.2` の external 定義と
+`providers.blas` / `providers.lapack` の設定を確認する。
 
 ---
 
