@@ -49,44 +49,7 @@ pjsub --interact --sparam wait-time=600 --rsc-list "elapse=1:0:0,node=1" --mpi "
 . /vol0004/apps/oss/spack-v1.0.1/share/spack/setup-env.sh
 ```
 
-## Fujitsu Compiler の確認
-
-本手順では Fujitsu Compiler 4.12.2 (`fj@4.12.2`) を使用する。
-
-本検証環境では user-level の compilers.yaml は使用していない。
-Fujitsu Compiler は site configuration により Spack から認識されている。
-
-まず、ビルド開始前に、Spack から Fujitsu Compiler が認識されていることを確認すること。
-
-```bash
-spack compiler list
-```
-
-以下のように fj@4.12.2 が表示されれば利用可能。
-
-```text
-==> Available compilers
-
--- fj rhel8-aarch64 ---------------------------------------------
-[e] fj@4.12.2
-```
-
-fj@4.12.2 が表示されない場合は、コンパイラを検出する。
-
-```bash
-module load fj
-spack compiler find
-```
-
-再度確認する。
-
-```bash
-spack compiler list
-```
-
-本資料のビルド手順は、fj@4.12.2 が Spack から利用可能であることを前提としている。
-
-# Spack ローカル設定
+## Spack ローカル設定
 
 本手順ではユーザー設定ディレクトリとして
 
@@ -108,14 +71,14 @@ export SPACK_USER_CONFIG_PATH=$HOME/.spack.dev
 
 ---
 
-## concretizer.yaml
+### concretizer.yaml
 
 ```yaml
 concretizer:
   reuse: false
 ```
 
-### 設定理由
+#### 設定理由
 
 既存のインストール済みパッケージを再利用せず、
 毎回新たに依存関係を解決させるため。
@@ -132,7 +95,7 @@ spack config get concretizer
 
 ---
 
-## config.yaml
+### config.yaml
 
 以下は設定例。
 
@@ -144,7 +107,7 @@ config:
   misc_cache: ~/.spack/cache
 ```
 
-### install_tree
+#### install_tree
 
 ```yaml
 install_tree:
@@ -161,7 +124,7 @@ install_tree:
 
 は適宜変更のこと。
 
-### source_cache
+#### source_cache
 
 ```yaml
 source_cache: ~/.spack/source_cache
@@ -171,7 +134,7 @@ source_cache: ~/.spack/source_cache
 
 同一ソースを再利用する際の再ダウンロードを防ぐ。
 
-### misc_cache
+#### misc_cache
 
 ```yaml
 misc_cache: ~/.spack/cache
@@ -187,7 +150,7 @@ spack config get config
 
 ---
 
-## modules.yaml
+### modules.yaml
 
 ```yaml
 modules:
@@ -197,7 +160,7 @@ modules:
       tcl: ~/.spack/modules
 ```
 
-### 設定理由
+#### 設定理由
 
 本手順では環境モジュールを利用しなかったため、
 
@@ -216,13 +179,13 @@ roots:
 
 を設定した。
 
-### 確認方法
+#### 確認方法
 
 ```bash
 spack config get modules
 ```
 
-### 備考
+#### 備考
 
 モジュールを利用する場合は、環境に応じて以下のように変更する。
 
@@ -245,7 +208,7 @@ ls ~/.spack/modules
 
 ---
 
-## packages.yaml
+### packages.yaml
 
 今回使用した設定は以下の通りである。
 
@@ -271,9 +234,9 @@ packages:
       prefix: /opt/FJSVxtclanga/tcsds-ssl2-1.2.43
 ```
 
-### 設定理由
+#### 設定理由
 
-#### BLAS/LAPACK provider の固定
+##### BLAS/LAPACK provider の固定
 
 ```yaml
 providers:
@@ -284,7 +247,7 @@ providers:
 を指定することで、BLAS/LAPACK ライブラリとして
 Fujitsu SSL2 を優先的に利用する。
 
-#### Fujitsu MPI 4.12.2 の external 定義
+##### Fujitsu MPI 4.12.2 の external 定義
 
 ```yaml
 fujitsu-mpi@4.12.2
@@ -293,7 +256,7 @@ fujitsu-mpi@4.12.2
 を external package として登録することで、
 Spack がシステム導入済みの Fujitsu MPI を利用できるようにする。
 
-#### Fujitsu SSL2 4.12.2 の external 定義
+##### Fujitsu SSL2 4.12.2 の external 定義
 
 ```yaml
 fujitsu-ssl2@4.12.2
@@ -302,7 +265,7 @@ fujitsu-ssl2@4.12.2
 を external package として登録することで、
 Spack がシステム導入済みの Fujitsu SSL2 を利用できるようにする。
 
-### 発生した問題
+#### 発生した問題
 
 当初、
 
@@ -371,7 +334,44 @@ cp $REPO_DIR/GROMACS/2025.3-spack/packages.yaml $SPACK_USER_CONFIG_PATH/
 
 は適宜設定すること。
 
-# Spec確認
+## Fujitsu Compiler の確認
+
+本手順では Fujitsu Compiler 4.12.2 (`fj@4.12.2`) を使用する。
+
+本検証環境では user-level の compilers.yaml は使用していない。
+Fujitsu Compiler は site configuration により Spack から認識されている。
+
+まず、ビルド開始前に、Spack から Fujitsu Compiler が認識されていることを確認すること。
+
+```bash
+spack compiler list
+```
+
+以下のように fj@4.12.2 が表示されれば利用可能。
+
+```text
+==> Available compilers
+
+-- fj rhel8-aarch64 ---------------------------------------------
+[e] fj@4.12.2
+```
+
+fj@4.12.2 が表示されない場合は、コンパイラを検出する。
+
+```bash
+module load fj
+spack compiler find
+```
+
+再度確認する。
+
+```bash
+spack compiler list
+```
+
+本資料のビルド手順は、fj@4.12.2 が Spack から利用可能であることを前提としている。
+
+## Spec確認
 
 インストール前に依存関係を確認する。
 
@@ -502,8 +502,17 @@ spack install
 
 # ロード
 
+以下のコマンドでインストール済みの GROMACS をロードする。
+
 ```bash
-spack load /<hash>
+spack load /SPEC_HASH
+```
+
+SPEC_HASH は実際の Spec Hash に置き換えること。
+利用可能な Hash は以下で確認できる。
+
+```bash
+spack find -lv gromacs
 ```
 
 ## インストールされる実行ファイル
@@ -619,13 +628,27 @@ spack find --loaded
 インストール場所確認:
 
 ```bash
-spack location -i /<hash>
+spack location -i /SPEC_HASH
+```
+
+SPEC_HASH は実際の Spec Hash に置き換えること。
+利用可能な Hash は以下で確認できる。
+
+```bash
+spack find -lv
 ```
 
 Spec確認:
 
 ```bash
-spack spec /<hash>
+spack spec /SPEC_HASH
+```
+
+SPEC_HASH は実際の Spec Hash に置き換えること。
+利用可能な Hash は以下で確認できる。
+
+```bash
+spack find -lv
 ```
 
 ---
@@ -676,7 +699,14 @@ spack unload --all
 再ロード:
 
 ```bash
-spack load /<hash>
+spack load /SPEC_HASH
+```
+
+SPEC_HASH は実際の Spec Hash に置き換えること。
+利用可能な Hash は以下で確認できる。
+
+```bash
+spack find -lv
 ```
 
 ---
