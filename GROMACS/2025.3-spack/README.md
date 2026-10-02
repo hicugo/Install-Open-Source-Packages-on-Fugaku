@@ -28,7 +28,7 @@ pjsub --interact --sparam wait-time=600 --rsc-list "elapse=1:0:0,node=1" --mpi "
 ## ソフトウェア
 
 - GROMACS 2025.3
-- Spack
+- Spack v1.0.1
 - Fujitsu Compiler 4.12.2
 - Fujitsu MPI 4.12.2
 - Fujitsu SSL2
@@ -39,6 +39,36 @@ pjsub --interact --sparam wait-time=600 --rsc-list "elapse=1:0:0,node=1" --mpi "
 - Fujitsu A64FX
 
 ---
+
+# ビルド前の準備
+
+## Spack環境の初期化
+
+以下のコマンドを実行する。
+
+```bash
+. /vol0004/apps/oss/spack-v1.0.1/share/spack/setup-env.sh
+```
+
+## Fujitsu Compiler の確認
+
+本手順では Fujitsu Compiler 4.12.2 (`fj@4.12.2`) を使用する。
+
+ビルド開始前に、Spack から Fujitsu Compiler が認識されていることを確認すること。
+
+```bash
+spack compiler list
+```
+
+以下のように fj@4.12.2 が表示されれば利用可能。
+
+```text
+==> Available compilers
+
+-- fj rhel8-aarch64 ---------------------------------------------
+[e] fj@4.12.2
+```
+
 
 # Spack ローカル設定
 
@@ -91,7 +121,7 @@ spack config get concretizer
 ```yaml
 config:
   install_tree:
-    root: /data/rist/r00021/spack
+    root: /your/install/path/spack
   source_cache: ~/.spack/source_cache
   misc_cache: ~/.spack/cache
 ```
@@ -100,18 +130,18 @@ config:
 
 ```yaml
 install_tree:
-  root: /data/rist/r00021/spack
+  root: /your/install/path/spack
 ```
 
 インストール先を指定する。
 
-今回はホームディレクトリではなく
+今回指定したディレクトリ名
 
 ```text
-/data/rist/r00021/spack
+/your/install/path/spack
 ```
 
-を使用した。
+は適宜変更のこと。
 
 ### source_cache
 
@@ -300,17 +330,18 @@ spack spec ...
 
 が選択されるようになった。
 
-パッチの適用：
+設定ファイルの適用：
 
-当リポジトリ配下に格納されたpatch fileをコピーして利用。
+当リポジトリ配下に格納されたyaml fileをコピーして利用。
 
 ```bash
 export REPO_DIR=/path/to/Install-Open-Source-Packages-on-Fugaku       # REPO_DIR: 本リポジトリをクローンしたディレクトリ
 
-cp $REPO_DIR/GROMACS/2025.3-spack/concretizer.yaml ~/.spack-dev/
-cp $REPO_DIR/GROMACS/2025.3-spack/config.yaml ~/.spack-dev/
-cp $REPO_DIR/GROMACS/2025.3-spack/modules.yaml ~/.spack-dev/
-cp $REPO_DIR/GROMACS/2025.3-spack/packages.yaml ~/.spack-dev/
+mkdir -p $SPACK_USER_CONFIG_PATH
+cp $REPO_DIR/GROMACS/2025.3-spack/concretizer.yaml $SPACK_USER_CONFIG_PATH/
+cp $REPO_DIR/GROMACS/2025.3-spack/config.yaml $SPACK_USER_CONFIG_PATH/
+cp $REPO_DIR/GROMACS/2025.3-spack/modules.yaml $SPACK_USER_CONFIG_PATH/
+cp $REPO_DIR/GROMACS/2025.3-spack/packages.yaml $SPACK_USER_CONFIG_PATH/
 ```
 ---
 
@@ -351,6 +382,32 @@ vl=512 \
 
 # ビルド
 
+## GROMACSソースコードの準備
+
+開発中のソースコードを `spack dev-build` で利用するため、あらかじめソースコードを取得します。
+
+GROMACS 2025.3 をダウンロードします。
+
+```bash
+cd ~
+
+wget https://ftp.gromacs.org/gromacs/gromacs-2025.3.tar.gz
+```
+
+展開します。
+
+```bash
+tar xzf gromacs-2025.3.tar.gz
+```
+
+展開後、以下のディレクトリが存在することを確認してください。
+
+```bash
+ls ~/gromacs-2025.3
+```
+
+以降の `spack dev-build` では、このソースツリーを使用します。
+
 ```bash
 spack dev-build -d ~/gromacs-2025.3 \
 gromacs@2025.3+sve+fast+cycle_subcounters \
@@ -368,7 +425,7 @@ vl=512 \
 本手順では
 
 ```bash
-spack install
+spack install <dev-build と同じ spec>
 ```
 
 ではなく
@@ -494,7 +551,7 @@ OpenMP Thread数/Rank   : 24
 
 ```bash
 export KMP_AFFINITY=compact,verbose
-gmxtest.pl -np 2 -mpirun mpiexec -nosuffix -relaxed -crosscompile all > log.test
+./gmxtest.pl -np 2 -mpirun mpiexec -nosuffix -relaxed -crosscompile all > log.test
 ```
 
 結果:
