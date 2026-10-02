@@ -53,7 +53,10 @@ pjsub --interact --sparam wait-time=600 --rsc-list "elapse=1:0:0,node=1" --mpi "
 
 本手順では Fujitsu Compiler 4.12.2 (`fj@4.12.2`) を使用する。
 
-ビルド開始前に、Spack から Fujitsu Compiler が認識されていることを確認すること。
+本検証環境では user-level の compilers.yaml は使用していない。
+Fujitsu Compiler は site configuration により Spack から認識されている。
+
+まず、ビルド開始前に、Spack から Fujitsu Compiler が認識されていることを確認すること。
 
 ```bash
 spack compiler list
@@ -68,6 +71,20 @@ spack compiler list
 [e] fj@4.12.2
 ```
 
+fj@4.12.2 が表示されない場合は、コンパイラを検出する。
+
+```bash
+module load fj
+spack compiler find
+```
+
+再度確認する。
+
+```bash
+spack compiler list
+```
+
+本資料のビルド手順は、fj@4.12.2 が Spack から利用可能であることを前提としている。
 
 # Spack ローカル設定
 
@@ -493,6 +510,7 @@ spack load /<hash>
  
 本手順でビルドした GROMACS では、MPI 版の実行ファイル `gmx_mpi` だけでなく、
 前処理や解析で使用する `gmx` もインストールされる。
+
 確認:
 
 ```bash
