@@ -284,7 +284,6 @@ spack spec ...
 原因は、`packages.yaml` に
 
 ```yaml
-fujitsu-mpi@4.12.2
 fujitsu-ssl2@4.12.2
 ```
 
@@ -305,11 +304,18 @@ spack spec ...
 が消え、
 
 ```text
-^fujitsu-mpi@4.12.2
 ^fujitsu-ssl2
 ```
 
 が選択されるようになった。
+
+また、mpi を external 指定した結果、依存関係の解決結果が変化した。
+
+```yaml
+fujitsu-mpi@4.12.2
+```
+
+MPI の external 指定とBLAS/LAPACK provider の選択は独立した設定である。
 
 設定ファイルの適用：
 
