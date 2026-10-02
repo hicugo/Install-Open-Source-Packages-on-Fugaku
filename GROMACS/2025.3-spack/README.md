@@ -493,7 +493,7 @@ Spack を利用してビルドおよび依存関係管理を行うことがで�
 改造を行わない場合は、
 
 ```bash
-spack install
+spack install <dev-build と同じ spec>
 ```
 
 を使用してもよい。GROMACSのサイトからソースコードが自動的にダウンロードされる。
