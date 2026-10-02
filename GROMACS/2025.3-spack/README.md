@@ -2,7 +2,7 @@
 
 ## 概要
 
-本手順書では、A64FX 環境において Fujitsu Compiler 4.12.2 を用い、Spack から GROMACS 2025.3 をローカルインストールする方法を示す。
+本手順書では、A64FX 環境において Fujitsu Compiler 4.12.2 を用い、Spack から GROMACS 2025.3 をローカルインストールする方法を示す。本手順でビルドした GROMACS では、MPI 版の実行ファイル `gmx_mpi` だけでなく、前処理や解析で使用する `gmx` もインストールされる。
 
 以下について記載する。
 
@@ -10,7 +10,6 @@
 - Fujitsu MPI / SSL2 の設定
 - GROMACS 2025.3 のビルド方法
 - 回帰テストの実施
-- ベンチマーク実施例
 - 遭遇した問題と回避方法
 
 なお、翻訳は計算ノードで行った。
@@ -117,6 +116,8 @@ spack config get concretizer
 ---
 
 ## config.yaml
+
+以下は設定例。
 
 ```yaml
 config:
@@ -332,7 +333,7 @@ spack spec ...
 
 設定ファイルの適用：
 
-当リポジトリ配下に格納されたyaml fileをコピーして利用。
+当リポジトリ配下に格納されたyaml fileをコピーして利用。以下は実施例。
 
 ```bash
 export REPO_DIR=/path/to/Install-Open-Source-Packages-on-Fugaku       # REPO_DIR: 本リポジトリをクローンしたディレクトリ
@@ -344,6 +345,14 @@ cp $REPO_DIR/GROMACS/2025.3-spack/modules.yaml $SPACK_USER_CONFIG_PATH/
 cp $REPO_DIR/GROMACS/2025.3-spack/packages.yaml $SPACK_USER_CONFIG_PATH/
 ```
 ---
+
+指定したディレクトリ名
+
+```text
+/path/to/
+```
+
+は適宜設定すること。
 
 # Spec確認
 
@@ -480,15 +489,23 @@ spack install
 spack load /<hash>
 ```
 
+## インストールされる実行ファイル
+ 
+本手順でビルドした GROMACS では、MPI 版の実行ファイル `gmx_mpi` だけでなく、
+前処理や解析で使用する `gmx` もインストールされる。
 確認:
 
 ```bash
+which gmx
 which gmx_mpi
 ```
 
 ```bash
+gmx --version
 gmx_mpi --version
 ```
+
+gmxtest では、mdrun は gmx_mpi を使用し、 それ以外のコマンドは gmx を使用する。
 
 ---
 
